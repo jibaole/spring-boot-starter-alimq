@@ -16,6 +16,7 @@ public class MqPropertiesConfig {
     private String secretKey;
     private Properties producer;
     private Properties consumer;
+    private String tagSuffix;
 
     public String getOnsAddr() {
         return onsAddr;
@@ -63,5 +64,13 @@ public class MqPropertiesConfig {
 
     public void setConsumer(Properties consumer) {
         this.consumer = consumer;
+    }
+
+    public String getTagSuffix() {
+        return tagSuffix;
+    }
+
+    public void setTagSuffix(String tagSuffix) {
+        this.tagSuffix = tagSuffix;
     }
 }
