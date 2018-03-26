@@ -37,7 +37,6 @@
 		/**
 	 	* 问诊状态处理类
 		 *
-		 * @author wuxy@ieyecloud.com
 		 * @date 2017/10/30 11:15
 		 */
 		@Component
