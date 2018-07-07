@@ -8,11 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 消息监听者需要继承该抽象类，实现handle方法，消息消费逻辑处理
- * 如果抛出异常，则重新入队列
- *
- * @author wuxy@ieyecloud.com
- * @date 2017/10/30 8:58
+ * @author jibaole
+ * @version 1.0
+ * @desc 消息监听者需要继承该抽象类，实现handle方法，消息消费逻辑处理(如果抛出异常，则重新入队列)
+ * @date 2018/7/7 下午5:19
  */
 public abstract class AbstractMessageListener implements MessageListener {
 

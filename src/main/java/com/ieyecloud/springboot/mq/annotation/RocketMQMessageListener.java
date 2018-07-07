@@ -19,6 +19,13 @@ package com.ieyecloud.springboot.mq.annotation;
 
 import java.lang.annotation.*;
 
+/**
+ * @author jibaole
+ * @version 1.0
+ * @desc 消息者监听(订阅消费内容)
+ * @date 2018/7/7 下午5:19
+ */
+
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

@@ -1,15 +1,18 @@
-package com.ieyecloud.springboot.mq.config;
+package com.ieyecloud.springboot.mq;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Properties;
 
 /**
- * @author wuxy@ieyecloud.com
- * @date 2017/10/27 14:06
+ * @author jibaole
+ * @version 1.0
+ * @desc 配置Bean
+ * @date 2018/7/7 下午5:19
  */
+
 @ConfigurationProperties(prefix = "aliyun.mq")
-public class MqPropertiesConfig {
+public class RocketMQProperties {
     private String onsAddr;
     private String topic;
     private String accessKey;

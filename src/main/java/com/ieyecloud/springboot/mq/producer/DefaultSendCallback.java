@@ -7,8 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author wuxy@ieyecloud.com
- * @date 2017/10/30 8:43
+ * @author jibaole
+ * @version 1.0
+ * @desc 消息者监听(订阅消费内容)
+ * @date 2018/7/7 下午5:29
  */
 public class DefaultSendCallback implements SendCallback {
 

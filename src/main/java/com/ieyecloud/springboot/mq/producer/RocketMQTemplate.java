@@ -4,22 +4,21 @@ import com.aliyun.openservices.ons.api.*;
 import com.aliyun.openservices.ons.api.exception.ONSClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Properties;
 
 /**
- * MQ发送定时消息
- *
- * @author wuxy@ieyecloud.com
- * @date 2017/10/27 14:25
+ * @author jibaole
+ * @version 1.0
+ * @desc 生产者
+ * @date 2018/7/7 下午5:19
  */
-public class MqTimerProducer {
-    private final static Logger LOG = LoggerFactory.getLogger(MqTimerProducer.class);
+public class RocketMQTemplate {
+    private final static Logger LOG = LoggerFactory.getLogger(RocketMQTemplate.class);
     private Properties properties;
     private Producer producer;
     private String topic;
 
-    public MqTimerProducer(Properties properties) {
+    public RocketMQTemplate(Properties properties) {
         if (properties == null || properties.get(PropertyKeyConst.ProducerId) == null
                 || properties.get(PropertyKeyConst.AccessKey) == null
                 || properties.get(PropertyKeyConst.SecretKey) == null
