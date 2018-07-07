@@ -32,19 +32,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <distributionManagement>
-        <repository>
-            <id>JS-Rep</id>
-            <name>js private repository</name>
-            <url>http://10.0.13.124:8081/nexus/content/repositories/JS-Rep/</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>js snapshots repository</name>
-            <url>http://10.0.13.124:8081/nexus/content/repositories/snapshots</url>
-            <uniqueVersion>true</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
