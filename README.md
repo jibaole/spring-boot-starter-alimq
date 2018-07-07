@@ -1,85 +1,18 @@
-# 基于aliyun mq服务的spring boot starter
-
-### 用法：
-1. pom.xml引入依赖，当前version：1.0.0-SNAPSHOT
-
-         <dependency>
-            <groupId>spring-boot-starter-alimq</groupId>
-            <artifactId>spring-boot-starter-alimq</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-		
-2. application配置文件中添加相应配置
-
-	    aliyun:
-  			mq:
-    			onsAddr: http://onsaddr-internet.aliyun.com/rocketmq/nsaddr4client-internet
-    			accessKey: xxx
-    			secretKey: xxx
-    			producer:
-      				enabled: true  #是否启用producer，为true则producerId必须提供
-      				producerId: xxx
-    			consumer:
-      				enabled: true  #是否启用consumer，为true则consumerId必须提供
-      			consumerId: xxx
+## 基于aliyun MQ服务的Spring boot starter
 
 
-
-
-
-3. 使用producer，consumer只需要在相应类中依需要注入对应实例
-	```java
-@Service
-public class ALiService {
-@Autowired
-   private RocketMQTemplate rocketMQTemplate;
-   
-    public void sentMsg() {
-
-        MessageEvent event = new MessageEvent();
-        event.setTopic("base_sms");
-        event.setTag("Tag_user");
-
-        User user = new User();
-        user.setName("Paul");
-        user.setAdds("北京市 昌平区 龙锦苑东二区");
-        event.setDomain(user);
-        rocketMQTemplate.send(event);
-    }
-}
-```	
-		
-
-    	
-4. consumer监听处理类实现，继承AbstractMessageListener类，实现handle方法即可，如
-```
-@Service
-@RocketMQMessageListener(topic = "base_sms",tag = "Tag_user")
-public class UserMessageListener extends AbstractMessageListener<User> {
-
-    @Override
-    public void handle(User user) {
-        System.out.println(user instanceof User);
-
-        System.out.println(user.toString());
-    }
-}
-```
-		
-
-
-# spring-boot-starter-alimq
-springboot集成阿里云MQ
+### 接入概要说明
 
 ##### 通用参数说明
 
 | 参数名	     | 参数说明  |
 | --------   | -----  |
 | onsAddr        | 设置 MQ TCP 协议接入点，参考上面表格（推荐）      |
-| NAMESRV_ADDR        | 设置 Name Server 列表（不推荐），与 ONSAddr 二选一      |
 | AccessKey        | 您在阿里云账号管理控制台中创建的 AccessKey，用于身份认证      |
 | SecretKey       | 您在阿里云账号管理控制台中创建的 SecretKey，用于身份认证     |
-
+| producerId       | 您在阿里云账号管理控制台中创建的producerId,用户发送消息    |
+| consumerId       | 您在阿里云账号管理控制台中创建的consumerId,用户订阅消息    |
+| consumerId       | 您在阿里云账号管理控制台中创建的consumerId,用户订阅消息    |
 
 
 
@@ -118,3 +51,92 @@ springboot集成阿里云MQ
 |公共云 Region：亚太东北 1 (东京)|	http://ons-ap-northeast-1-internal.aliyun.com:8080/rocketmq/nsaddr4client-internal|
 |金融云 Region：华东1	|http://jbponsaddr-internal.aliyun.com:8080/rocketmq/nsaddr4client-internal|
 |金融云 Region：华东2、华南1|	http://mq4finance-sz.addr.aliyun.com:8080/rocketmq/nsaddr4client-internal|
+
+
+### starter的基本用法：
+
+> 1、pom.xml引入依赖
+```xml
+       <dependency>
+            <groupId>cn.knowbox.book</groupId>
+            <artifactId>spring-boot-starter-alimq</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+```
+         
+		
+> 2、application配置文件中添加相应配置
+
+```properties
+
+    aliyun.mq.onsAddr=http://onsaddr-internet.aliyun.com/rocketmq/nsaddr4client-internet
+    aliyun.mq.accessKey=xxxxxxx
+    aliyun.mq.secretKey=xxxxxx
+    #为false表示不引入producer，为true则producerId必须提供
+    aliyun.mq.producer.enabled=true
+    aliyun.mq.producer.producerId=PID_PRODUCER_SMS 
+    #为false表示不引入consumer，为true则consumerId必须提供
+    aliyun.mq.consumer.enabled=true
+    aliyun.mq.consumer.consumerId=CID_CONSUMER_SMS
+    
+```
+
+
+
+
+
+> 3、 使用producer，consumer只需要在相应类中依需要注入对应实例
+```java
+
+@Service
+public class ALiService {
+@Autowired
+   private RocketMQTemplate rocketMQTemplate;
+   
+    /**
+     * 生产者
+     */
+    public void sentMsg() {
+        /**封装消息*/
+        MessageEvent event = new MessageEvent();
+        event.setTopic("base_sms");
+        event.setTag("Tag_user");
+        /**封装任意类型领域对象*/
+        User user = new User();
+        user.setName("Paul");
+        user.setAdds("北京市 昌平区 龙锦苑东二区");
+        event.setDomain(user);
+        
+        rocketMQTemplate.send(event);
+    }
+}
+
+```
+> 4、 consumer监听处理类实现，继承AbstractMessageListener类，实现handle方法即可，如
+```java
+
+/**
+ * @author jibaole
+ * @version 1.0
+ * @desc 用户事件监听处理
+ * @date 2018/7/5 上午11:18
+ */
+
+@Service
+@RocketMQMessageListener(topic = "base_sms",tag = "Tag_user")
+public class UserMessageListener extends AbstractMessageListener<User> {
+    /**
+     * 生产者
+     */
+    @Override
+    public void handle(User user) {
+        System.out.println(user instanceof User);
+
+        System.out.println(user.toString());
+    }
+}
+
+```
+* tag为`*`时，表示：接收所有topic消息；业务处理逻辑相同多个tag时，用tag1||tag2||tag3||……||tagn
+		
+
