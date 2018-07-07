@@ -20,7 +20,11 @@ public class RocketMQTemplate {
     @Resource
     private ProducerBean producer;
 
-
+    /****
+     * @Description: 同步发送
+     * @Param: [event]
+     * @Author: jibaole
+     */
     public SendResult send(MessageEvent event) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
@@ -32,6 +36,11 @@ public class RocketMQTemplate {
         return result;
     }
 
+    /****
+     * @Description: 同步发送(带延迟时间)
+     * @Param: [event, delay]
+     * @Author: jibaole
+     */
     public SendResult send(MessageEvent event, long delay) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
@@ -44,6 +53,11 @@ public class RocketMQTemplate {
         return result;
     }
 
+    /**
+     * @Description: 单向发送
+     * @Param: [event]
+     * @Author: jibaole
+     */
     public void sendOneway(MessageEvent event) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
@@ -54,6 +68,11 @@ public class RocketMQTemplate {
         log.info("send message success. ");
     }
 
+    /**
+     * @Description: 异步发送
+     * @Param: [event]
+     * @Author: jibaole
+     */
     public void sendAsync(MessageEvent event) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
@@ -63,6 +82,12 @@ public class RocketMQTemplate {
         this.producer.sendAsync(message, new DefaultSendCallback());
     }
 
+
+    /**
+     * @Description: 异步发送(带延迟时间)
+     * @Param: [event, delay]
+     * @Author: jibaole
+     */
     public void sendAsync(MessageEvent event, long delay) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
