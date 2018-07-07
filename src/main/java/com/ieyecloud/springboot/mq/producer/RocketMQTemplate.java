@@ -2,8 +2,7 @@ package com.ieyecloud.springboot.mq.producer;
 
 import com.aliyun.openservices.ons.api.*;
 import com.aliyun.openservices.ons.api.exception.ONSClientException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import java.util.Properties;
 
 /**
@@ -12,8 +11,8 @@ import java.util.Properties;
  * @desc 生产者
  * @date 2018/7/7 下午5:19
  */
+@Slf4j
 public class RocketMQTemplate {
-    private final static Logger LOG = LoggerFactory.getLogger(RocketMQTemplate.class);
     private Properties properties;
     private Producer producer;
     private String topic;
@@ -42,14 +41,14 @@ public class RocketMQTemplate {
     }
 
     public void send(String tag, String body, long delay) {
-        LOG.info("start to send message. [topic: {}, tag: {}, body: {}, delay: {}]", topic, tag, body, delay);
+        log.info("start to send message. [topic: {}, tag: {}, body: {}, delay: {}]", topic, tag, body, delay);
         if (topic == null || tag == null || body == null) {
             throw new RuntimeException("topic, tag, or body is null.");
         }
         Message message = new Message(topic, tag, body.getBytes());
         message.setStartDeliverTime(System.currentTimeMillis() + delay);
         SendResult result = this.producer.send(message);
-        LOG.info("send message success. ", result.toString());
+        log.info("send message success. ", result.toString());
     }
 
 
@@ -58,7 +57,7 @@ public class RocketMQTemplate {
     }
 
     public void sendAsync(String tag, String body, long delay, SendCallback sendCallback) {
-        LOG.info("start to send message async. [topic: {}, tag: {}, body: {}, delay: {}]", topic, tag, body, delay);
+        log.info("start to send message async. [topic: {}, tag: {}, body: {}, delay: {}]", topic, tag, body, delay);
         if (topic == null || tag == null || body == null) {
             throw new RuntimeException("topic, tag, or body is null.");
         }

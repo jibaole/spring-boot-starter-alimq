@@ -4,8 +4,7 @@ import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.exception.ONSClientException;
 import com.ieyecloud.springboot.mq.annotation.RocketMQMessageListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -17,9 +16,9 @@ import java.util.Properties;
  * @desc 消费者
  * @date 2018/7/7 下午5:19
  */
+@Slf4j
 public class Consumer implements BeanPostProcessor {
 
-    private final static Logger LOG = LoggerFactory.getLogger(Consumer.class);
     private Properties properties;
     private com.aliyun.openservices.ons.api.Consumer consumer;
     private String topic;
@@ -53,7 +52,7 @@ public class Consumer implements BeanPostProcessor {
      * @Author: jibaole
      */
     public void subscribe(String tags, AbstractMessageListener messageListener) {
-        LOG.info("subscribe [topic: {}, tags: {}, messageListener: {}]", topic, tags, messageListener.getClass().getCanonicalName());
+        log.info("subscribe [topic: {}, tags: {}, messageListener: {}]", topic, tags, messageListener.getClass().getCanonicalName());
         consumer.subscribe(topic, tags, messageListener);
     }
 
@@ -63,7 +62,7 @@ public class Consumer implements BeanPostProcessor {
     }
 
     /**
-     * @Description: 获取所有消费者订阅内容(Topic 、 Tag)
+     * @Description: 获取所有消费者订阅内容(Topic、Tag)
      * @Param: [bean, beanName]
      * @Author: jibaole
      */
