@@ -19,11 +19,11 @@ public class DefaultSendCallback implements SendCallback {
 
     @Override
     public void onSuccess(SendResult sendResult) {
-        log.info("send message success. " + sendResult.toString());
+        log.info("消息发送成功:  topic=" + sendResult.getTopic() + ", msgId=" + sendResult.getMessageId());
     }
 
     @Override
     public void onException(OnExceptionContext context) {
-        log.warn("send message failed. topic=" + context.getTopic() + ", msgId=" + context.getMessageId(), context.getException());
+        log.warn("消息发送失败: topic=" + context.getTopic() + ", msgId=" + context.getMessageId(), context.getException());
     }
 }

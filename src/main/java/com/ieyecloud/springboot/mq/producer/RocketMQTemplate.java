@@ -1,9 +1,9 @@
 package com.ieyecloud.springboot.mq.producer;
 
 import com.aliyun.openservices.ons.api.*;
-import com.aliyun.openservices.ons.api.exception.ONSClientException;
+import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import lombok.extern.slf4j.Slf4j;
-import java.util.Properties;
+
 
 /**
  * @author jibaole
@@ -13,34 +13,10 @@ import java.util.Properties;
  */
 @Slf4j
 public class RocketMQTemplate {
-    private Properties properties;
-    private Producer producer;
-    private String topic;
+    private ProducerBean producer;
 
-    public RocketMQTemplate(Properties properties) {
-        if (properties == null || properties.get(PropertyKeyConst.ProducerId) == null
-                || properties.get(PropertyKeyConst.AccessKey) == null
-                || properties.get(PropertyKeyConst.SecretKey) == null
-                || properties.get(PropertyKeyConst.ONSAddr) == null
-                || properties.get("topic") == null) {
-            throw new ONSClientException("producer properties not set properly.");
-        }
-        this.properties = properties;
-        this.topic = properties.getProperty("topic");
-    }
 
-    public void start() {
-        this.producer = ONSFactory.createProducer(this.properties);
-        this.producer.start();
-    }
-
-    public void shutdown() {
-        if (this.producer != null) {
-            this.producer.shutdown();
-        }
-    }
-
-    public void send(String tag, String body, long delay) {
+    public void send(String topic, String tag, String body, long delay) {
         log.info("start to send message. [topic: {}, tag: {}, body: {}, delay: {}]", topic, tag, body, delay);
         if (topic == null || tag == null || body == null) {
             throw new RuntimeException("topic, tag, or body is null.");
@@ -52,34 +28,15 @@ public class RocketMQTemplate {
     }
 
 
-    public void sendAsync(String tag, String body, long delay) {
-        this.sendAsync(tag, body, delay, new DefaultSendCallback());
-    }
-
-    public void sendAsync(String tag, String body, long delay, SendCallback sendCallback) {
+    public void sendAsync(String topic, String tag, String body, long delay) {
         log.info("start to send message async. [topic: {}, tag: {}, body: {}, delay: {}]", topic, tag, body, delay);
         if (topic == null || tag == null || body == null) {
             throw new RuntimeException("topic, tag, or body is null.");
         }
         Message message = new Message(topic, tag, body.getBytes());
         message.setStartDeliverTime(System.currentTimeMillis() + delay);
-        this.producer.sendAsync(message, sendCallback);
+        this.producer.sendAsync(message, new DefaultSendCallback());
     }
 
 
-    public Properties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(Properties properties) {
-        this.properties = properties;
-    }
-
-    public boolean isStarted() {
-        return this.producer.isStarted();
-    }
-
-    public boolean isClosed() {
-        return this.producer.isClosed();
-    }
 }

@@ -1,14 +1,12 @@
 package com.ieyecloud.springboot.mq.consumer;
 
-import com.aliyun.openservices.ons.api.ONSFactory;
-import com.aliyun.openservices.ons.api.PropertyKeyConst;
-import com.aliyun.openservices.ons.api.exception.ONSClientException;
+import com.aliyun.openservices.ons.api.bean.ConsumerBean;
 import com.ieyecloud.springboot.mq.annotation.RocketMQMessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import java.util.Properties;
+import javax.annotation.Resource;
 
 /**
  * @author jibaole
@@ -18,51 +16,12 @@ import java.util.Properties;
  */
 @Slf4j
 public class Consumer implements BeanPostProcessor {
+    @Resource
+    private ConsumerBean consumer;
 
-    private Properties properties;
-    private com.aliyun.openservices.ons.api.Consumer consumer;
-    private String topic;
-
-    public Consumer(Properties properties) {
-        if (properties == null || properties.get(PropertyKeyConst.ConsumerId) == null
-                || properties.get(PropertyKeyConst.AccessKey) == null
-                || properties.get(PropertyKeyConst.SecretKey) == null
-                || properties.get(PropertyKeyConst.ONSAddr) == null
-                || properties.get("topic") == null) {
-            throw new ONSClientException("consumer properties not set properly.");
-        }
-        this.properties = properties;
-        this.topic = properties.getProperty("topic");
-    }
-
-    public void start() {
-        this.consumer = ONSFactory.createConsumer(properties);
-        this.consumer.start();
-    }
-
-    public void shutdown() {
-        if (this.consumer != null) {
-            this.consumer.shutdown();
-        }
-    }
-
-    /****
-     * @Description: 多个tag用'||'拼接，所有用*
-     * @Param: [tags, messageListener]
-     * @Author: jibaole
-     */
-    public void subscribe(String tags, AbstractMessageListener messageListener) {
-        log.info("subscribe [topic: {}, tags: {}, messageListener: {}]", topic, tags, messageListener.getClass().getCanonicalName());
-        consumer.subscribe(topic, tags, messageListener);
-    }
-
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        return null;
-    }
 
     /**
-     * @Description: 获取所有消费者订阅内容(Topic、Tag)
+     * @Description: 获取所有消费者订阅内容(Topic 、 Tag);多个tag用'||'拼接，所有用*
      * @Param: [bean, beanName]
      * @Author: jibaole
      */
@@ -75,5 +34,10 @@ public class Consumer implements BeanPostProcessor {
             consumer.subscribe(annotation.topic(), annotation.tag(), listener);
         }
         return bean;
+    }
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return null;
     }
 }

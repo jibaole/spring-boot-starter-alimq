@@ -34,11 +34,7 @@
 	
 4. consumer监听处理类实现，继承AbstractMessageListener类，实现handle方法即可，如
 
-		/**
-	 	* 问诊状态处理类
-		 *
-		 * @date 2017/10/30 11:15
-		 */
+		
 		@Component
 		public class QuestionStatusMessageListener extends AbstractMessageListener{
 

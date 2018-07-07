@@ -1,15 +1,14 @@
 package com.ieyecloud.springboot.mq;
 
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
-import com.ieyecloud.springboot.mq.consumer.Consumer;
-import com.ieyecloud.springboot.mq.producer.RocketMQTemplate;
+import com.aliyun.openservices.ons.api.bean.ConsumerBean;
+import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.util.Properties;
 
 /**
@@ -21,33 +20,37 @@ import java.util.Properties;
 @Configuration
 @EnableConfigurationProperties(RocketMQProperties.class)
 public class RocketMQAutoConfiguration {
-
     @Autowired
     private RocketMQProperties propConfig;
 
-    @Bean(initMethod="start", destroyMethod = "shutdown")
+
+    @Bean(name = "producer",initMethod = "start", destroyMethod = "shutdown")
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.producer",value = "enabled",havingValue = "true")
-    public RocketMQTemplate mqTimerProducer(){
+    public ProducerBean producer() {
+        ProducerBean producerBean = new ProducerBean();
         Properties properties = new Properties();
-        properties.setProperty(PropertyKeyConst.ProducerId, propConfig.getProducer().getProperty("producerId"));
-        properties.setProperty(PropertyKeyConst.AccessKey, propConfig.getAccessKey());
-        properties.setProperty(PropertyKeyConst.SecretKey, propConfig.getSecretKey());
-        properties.setProperty(PropertyKeyConst.ONSAddr, propConfig.getOnsAddr());
-        properties.setProperty("topic", propConfig.getTopic());
-        return  new RocketMQTemplate(properties);
+        System.out.println("执行producer初始化");
+        properties.put(PropertyKeyConst.ProducerId, propConfig.getProducer().getProperty("producerId"));
+        properties.put(PropertyKeyConst.AccessKey, propConfig.getAccessKey());
+        properties.put(PropertyKeyConst.SecretKey, propConfig.getSecretKey());
+        properties.put(PropertyKeyConst.ONSAddr, propConfig.getOnsAddr());
+        producerBean.setProperties(properties);
+        producerBean.start();
+        return producerBean;
     }
 
-    @Bean(initMethod="start", destroyMethod = "shutdown")
+    @Bean(name = "consumer",initMethod = "start", destroyMethod = "shutdown")
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.consumer",value = "enabled",havingValue = "true")
-    public Consumer mqConsumer(){
+    public ConsumerBean consumer(){
+        ConsumerBean consumerBean = new ConsumerBean();
         Properties properties = new Properties();
         properties.setProperty(PropertyKeyConst.ConsumerId, propConfig.getConsumer().getProperty("consumerId"));
         properties.setProperty(PropertyKeyConst.AccessKey, propConfig.getAccessKey());
         properties.setProperty(PropertyKeyConst.SecretKey, propConfig.getSecretKey());
         properties.setProperty(PropertyKeyConst.ONSAddr, propConfig.getOnsAddr());
-        properties.setProperty("topic", propConfig.getTopic());
-        return  new Consumer(properties);
+        consumerBean.setProperties(properties);
+        return  consumerBean;
     }
 }
