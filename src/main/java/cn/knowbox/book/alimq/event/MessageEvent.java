@@ -1,4 +1,4 @@
-package com.ieyecloud.springboot.mq.event;
+package cn.knowbox.book.alimq.event;
 
 import lombok.Data;
 import java.io.Serializable;

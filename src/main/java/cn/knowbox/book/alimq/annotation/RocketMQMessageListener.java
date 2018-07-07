@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.ieyecloud.springboot.mq.annotation;
+package cn.knowbox.book.alimq.annotation;
 
 import java.lang.annotation.*;
 

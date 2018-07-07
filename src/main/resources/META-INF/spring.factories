@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.ieyecloud.springboot.mq.RocketMQAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.knowbox.book.alimq.RocketMQAutoConfiguration

@@ -1,4 +1,4 @@
-package com.ieyecloud.springboot.mq;
+package cn.knowbox.book.alimq;
 
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.bean.ConsumerBean;

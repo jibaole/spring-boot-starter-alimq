@@ -1,4 +1,4 @@
-package com.ieyecloud.springboot.mq.consumer;
+package cn.knowbox.book.alimq.consumer;
 
 import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;

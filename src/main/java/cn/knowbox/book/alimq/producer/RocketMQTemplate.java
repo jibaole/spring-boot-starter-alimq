@@ -1,8 +1,8 @@
-package com.ieyecloud.springboot.mq.producer;
+package cn.knowbox.book.alimq.producer;
 
 import com.aliyun.openservices.ons.api.*;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
-import com.ieyecloud.springboot.mq.event.MessageEvent;
+import cn.knowbox.book.alimq.event.MessageEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.SerializationUtils;
 import org.springframework.util.StringUtils;

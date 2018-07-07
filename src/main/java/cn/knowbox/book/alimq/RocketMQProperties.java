@@ -1,4 +1,4 @@
-package com.ieyecloud.springboot.mq;
+package cn.knowbox.book.alimq;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

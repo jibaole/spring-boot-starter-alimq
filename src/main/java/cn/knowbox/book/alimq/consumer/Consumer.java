@@ -1,7 +1,7 @@
-package com.ieyecloud.springboot.mq.consumer;
+package cn.knowbox.book.alimq.consumer;
 
 import com.aliyun.openservices.ons.api.bean.ConsumerBean;
-import com.ieyecloud.springboot.mq.annotation.RocketMQMessageListener;
+import cn.knowbox.book.alimq.annotation.RocketMQMessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;

@@ -1,4 +1,4 @@
-package com.ieyecloud.springboot.mq.producer;
+package cn.knowbox.book.alimq.producer;
 
 import com.aliyun.openservices.ons.api.OnExceptionContext;
 import com.aliyun.openservices.ons.api.SendCallback;
