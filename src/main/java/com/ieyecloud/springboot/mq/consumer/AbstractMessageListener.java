@@ -5,8 +5,7 @@ import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.MessageListener;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.util.SerializationUtils;
 
 /**
  * @author jibaole
@@ -15,14 +14,14 @@ import org.slf4j.LoggerFactory;
  * @date 2018/7/7 下午5:19
  */
 @Slf4j
-public abstract class AbstractMessageListener implements MessageListener {
-    public abstract void handle(String body);
+public abstract class AbstractMessageListener<T> implements MessageListener {
+    public abstract void handle(T body);
 
     @Override
     public Action consume(Message message, ConsumeContext context) {
         log.info("receive message. [topic: {}, tag: {}, body: {}, msgId: {}, startDeliverTime: {}]", message.getTopic(), message.getTag(), new String(message.getBody()), message.getMsgID(), message.getStartDeliverTime());
         try {
-            handle(new String(message.getBody()));
+            handle((T)SerializationUtils.deserialize(message.getBody()));
             log.info("handle message success.");
             return Action.CommitMessage;
         } catch (Exception e) {
