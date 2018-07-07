@@ -1,9 +1,9 @@
 ## 基于aliyun MQ服务的Spring boot starter
 
 
-### 接入概要说明
+### 一、接入概要说明
 
-##### 通用参数说明
+##### 1、通用参数说明
 
 | 参数名	     | 参数说明  |
 | --------   | -----  |
@@ -12,11 +12,11 @@
 | SecretKey       | 您在阿里云账号管理控制台中创建的 SecretKey，用于身份认证     |
 | producerId       | 您在阿里云账号管理控制台中创建的producerId,用户发送消息    |
 | consumerId       | 您在阿里云账号管理控制台中创建的consumerId,用户订阅消息    |
-| consumerId       | 您在阿里云账号管理控制台中创建的consumerId,用户订阅消息    |
 
 
 
-##### 发送消息参数说明
+
+##### 2、发送消息参数说明
 
 |参数名|	参数说明|
 | --------   | -----  |
@@ -26,7 +26,7 @@
 |shardingKey（顺序消息）|	顺序消息中用来计算不同分区的值|
 
 ![image](http://om9j2ardo.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180607122953.png)
-##### 订阅消息参数说明
+##### 3、订阅消息参数说明
 
 |参数名|	参数说明|
 | --------   | -----  |
@@ -39,7 +39,7 @@
 
 ![image](http://om9j2ardo.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180607122207.png)
 
-##### TCP 协议接入域名
+##### 4、TCP协议接入域名
 
 |环境说明	|接入点|
 | --------   | -----  |
@@ -53,9 +53,12 @@
 |金融云 Region：华东2、华南1|	http://mq4finance-sz.addr.aliyun.com:8080/rocketmq/nsaddr4client-internal|
 
 
-### starter的基本用法：
+
+
+### 二、starter的基本用法：
 
 > 1、pom.xml引入依赖
+
 ```xml
        <dependency>
             <groupId>cn.knowbox.book</groupId>
@@ -66,6 +69,7 @@
          
 		
 > 2、application配置文件中添加相应配置
+
 
 ```properties
 
@@ -86,7 +90,9 @@
 
 
 > 3、 使用producer，consumer只需要在相应类中依需要注入对应实例
+
 ```java
+
 
 @Service
 public class ALiService {
@@ -112,8 +118,10 @@ public class ALiService {
 }
 
 ```
-> 4、 consumer监听处理类实现，继承AbstractMessageListener类，实现handle方法即可，如
+> 4、 consumer监听处理类实现，继承AbstractMessageListener类，实现handle方法即可，如：
+
 ```java
+
 
 /**
  * @author jibaole
