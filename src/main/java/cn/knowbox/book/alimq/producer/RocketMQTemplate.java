@@ -4,6 +4,9 @@ import com.aliyun.openservices.ons.api.*;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import cn.knowbox.book.alimq.event.MessageEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 import org.springframework.util.SerializationUtils;
 import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
@@ -15,6 +18,7 @@ import javax.annotation.Resource;
  * @date 2018/7/7 下午5:19
  */
 @Slf4j
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class RocketMQTemplate {
 
     @Resource

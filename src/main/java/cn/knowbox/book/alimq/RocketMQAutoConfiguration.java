@@ -1,8 +1,10 @@
 package cn.knowbox.book.alimq;
 
+import cn.knowbox.book.alimq.consumer.Consumer;
+import cn.knowbox.book.alimq.producer.RocketMQTemplate;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
-import com.aliyun.openservices.ons.api.bean.ConsumerBean;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,6 +21,7 @@ import java.util.Properties;
  */
 @Configuration
 @EnableConfigurationProperties(RocketMQProperties.class)
+@Slf4j
 public class RocketMQAutoConfiguration {
     @Autowired
     private RocketMQProperties propConfig;
@@ -30,7 +33,7 @@ public class RocketMQAutoConfiguration {
     public ProducerBean producer() {
         ProducerBean producerBean = new ProducerBean();
         Properties properties = new Properties();
-        System.out.println("执行producer初始化");
+        log.info("执行producer初始化……");
         properties.put(PropertyKeyConst.ProducerId, propConfig.getProducer().getProperty("producerId"));
         properties.put(PropertyKeyConst.AccessKey, propConfig.getAccessKey());
         properties.put(PropertyKeyConst.SecretKey, propConfig.getSecretKey());
@@ -40,17 +43,24 @@ public class RocketMQAutoConfiguration {
         return producerBean;
     }
 
-    @Bean(name = "consumer",initMethod = "start", destroyMethod = "shutdown")
+
+    @Bean(initMethod="start", destroyMethod = "shutdown")
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.consumer",value = "enabled",havingValue = "true")
-    public ConsumerBean consumer(){
-        ConsumerBean consumerBean = new ConsumerBean();
+    public Consumer mqConsumer(){
         Properties properties = new Properties();
+        log.info("执行consumer初始化……");
         properties.setProperty(PropertyKeyConst.ConsumerId, propConfig.getConsumer().getProperty("consumerId"));
         properties.setProperty(PropertyKeyConst.AccessKey, propConfig.getAccessKey());
         properties.setProperty(PropertyKeyConst.SecretKey, propConfig.getSecretKey());
         properties.setProperty(PropertyKeyConst.ONSAddr, propConfig.getOnsAddr());
-        consumerBean.setProperties(properties);
-        return  consumerBean;
+        properties.setProperty("topic", propConfig.getTopic());
+        return  new Consumer(properties);
+    }
+
+    @Bean
+    public RocketMQTemplate rocketMQTemplate(){
+        RocketMQTemplate rocketMQTemplate = new RocketMQTemplate();
+        return rocketMQTemplate;
     }
 }

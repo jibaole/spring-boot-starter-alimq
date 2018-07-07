@@ -19,7 +19,7 @@ public abstract class AbstractMessageListener<T> implements MessageListener {
 
     @Override
     public Action consume(Message message, ConsumeContext context) {
-        log.info("receive message. [topic: {}, tag: {}, body: {}, msgId: {}, startDeliverTime: {}]", message.getTopic(), message.getTag(), new String(message.getBody()), message.getMsgID(), message.getStartDeliverTime());
+        log.info("接收消息:[topic: {}, tag: {}, msgId: {}, startDeliverTime: {}]", message.getTopic(), message.getTag(), message.getMsgID(), message.getStartDeliverTime());
         try {
             handle((T)SerializationUtils.deserialize(message.getBody()));
             log.info("handle message success.");
