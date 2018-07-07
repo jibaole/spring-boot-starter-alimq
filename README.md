@@ -17,10 +17,10 @@
     			accessKey: xxx
     			secretKey: xxx
     			producer:
-      				enabled: true  #为false表示不引入producer，为true则producerId必须提供
+      				enabled: true  #是否启用producer，为true则producerId必须提供
       				producerId: xxx
     			consumer:
-      				enabled: true  #为false表示不引入consumer，为true则consumerId必须提供
+      				enabled: true  #是否启用consumer，为true则consumerId必须提供
       			consumerId: xxx
 
 
@@ -28,20 +28,44 @@
 
 
 3. 使用producer，consumer只需要在相应类中依需要注入对应实例
+	```java
+@Service
+public class ALiService {
+@Autowired
+   private RocketMQTemplate rocketMQTemplate;
+   
+    public void sentMsg() {
+
+        MessageEvent event = new MessageEvent();
+        event.setTopic("base_sms");
+        event.setTag("Tag_user");
+
+        User user = new User();
+        user.setName("Paul");
+        user.setAdds("北京市 昌平区 龙锦苑东二区");
+        event.setDomain(user);
+        rocketMQTemplate.send(event);
+    }
+}
+```	
 		
-		@Autowired
-    	private RocketMQTemplate  rocketMQTemplate;
 
     	
 4. consumer监听处理类实现，继承AbstractMessageListener类，实现handle方法即可，如
+```
+@Service
+@RocketMQMessageListener(topic = "base_sms",tag = "Tag_user")
+public class UserMessageListener extends AbstractMessageListener<User> {
 
+    @Override
+    public void handle(User user) {
+        System.out.println(user instanceof User);
+
+        System.out.println(user.toString());
+    }
+}
+```
 		
-		@Service
-        @RocketMQMessageListener(topic = "base_sms",tag = "Tag19||Tag010")
-		public class SmsMessageListener extends AbstractMessageListener{
-
-		    
-		}
 
 
 # spring-boot-starter-alimq
@@ -51,11 +75,11 @@ springboot集成阿里云MQ
 
 | 参数名	     | 参数说明  |
 | --------   | -----  |
-| ONSAddr        | 设置 MQ TCP 协议接入点，参考上面表格（推荐）      |
+| onsAddr        | 设置 MQ TCP 协议接入点，参考上面表格（推荐）      |
 | NAMESRV_ADDR        | 设置 Name Server 列表（不推荐），与 ONSAddr 二选一      |
 | AccessKey        | 您在阿里云账号管理控制台中创建的 AccessKey，用于身份认证      |
 | SecretKey       | 您在阿里云账号管理控制台中创建的 SecretKey，用于身份认证     |
-|OnsChannel       | 用户渠道，默认为：ALIYUN，聚石塔用户为：CLOUD      |
+
 
 
 
