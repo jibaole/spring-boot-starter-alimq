@@ -3,6 +3,9 @@
 
 ### 一、接入概要说明
 
+* 快速入门：<https://help.aliyun.com/document_detail/34411.html>
+* Demo地址：<https://github.com/AliwareMQ/mq-demo>
+
 ##### 1、通用参数说明
 
 | 参数名	     | 参数说明  |
@@ -145,6 +148,7 @@ public class UserMessageListener extends AbstractMessageListener<User> {
 }
 
 ```
+* topic为必填，可以配置多个不同topic监听业务处理
 * tag为`*`时，表示：接收所有topic消息；业务处理逻辑相同多个tag时，用tag1||tag2||tag3||……||tagn
 		
 
