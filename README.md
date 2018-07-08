@@ -1,12 +1,29 @@
 ## 基于aliyun MQ服务封装的SpringBoot starter [源码地址>>>](https://github.com/jibaole/spring-boot-starter-alimq)
 
 
-### 一、接入概要说明
+### 一、RocketMQ相关说明
 
 * 快速入门：<https://help.aliyun.com/document_detail/34411.html>
 * 官网Demo地址：<https://github.com/AliwareMQ/mq-demo>
 
-##### 1、通用参数说明
+> RocketMQ 物理部署结构
+
+![](https://ws2.sinaimg.cn/large/006tNc79ly1ft2r4zpl2aj31kw0xnq65.jpg)
+> RocketMQ 网络部署特点
+* Name Server 是一个几乎无状态节点，可集群部署，节点之间无任何信息同步。
+* Broker 部署相对复杂，Broker 分为 Master 与 Slave，一个 Master 可以对应多个 Slave，但是一个 Slave 只能对应一个 Master，Master 与 Slave 
+  的对应关系通过指定相同的 BrokerName，不同的 BrokerId 来定义，BrokerId为 0 表示 Master，非 0 表示 Slave。Master 也可以部署多个。每个 Broker 
+  与Name Server 集群中的所有节点建立长连接，定时注册 Topic 信息到所有 Name Server。
+
+* Producer 与 Name Server 集群中的其中一个节点(随机选择)建立长连接，定期从 Name Server 取 Topic 路由信息，并向提供 Topic 服务的 Master 
+  建立长连接，且定时向 Master 发送心跳。Producer 完全无状态，可集群部署。
+  
+* Consumer 与 Name Server 集群中的其中一个节点(随机选择)建立长连接，定期从 Name Server 取 Topic 路由信息，并向提供 Topic 服务的 Master、
+  Slave 建立长连接，且定时向 Master、Slave 发送心跳。Consumer 既可以从 Master 订阅消息，也可以从 Slave 订阅消息，订阅规则由 Broker 配置决定。  
+
+### 二、接入概要说明
+
+> 1、通用参数说明
 
 | 参数名	     | 参数说明  |
 | --------   | -----  |
@@ -19,7 +36,7 @@
 
 
 
-##### 2、发送消息参数说明
+> 2、发送消息参数说明
 
 |参数名|	参数说明|
 | --------   | -----  |
@@ -29,7 +46,8 @@
 |shardingKey（顺序消息）|	顺序消息中用来计算不同分区的值|
 
 ![image](http://om9j2ardo.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180607122953.png)
-##### 3、订阅消息参数说明
+
+> 3、订阅消息参数说明
 
 |参数名|	参数说明|
 | --------   | -----  |
@@ -42,7 +60,7 @@
 
 ![image](http://om9j2ardo.bkt.clouddn.com/QQ%E5%9B%BE%E7%89%8720180607122207.png)
 
-##### 4、TCP协议接入域名
+> 4、TCP协议接入域名
 
 |环境说明	|接入点|
 | --------   | -----  |
@@ -58,7 +76,7 @@
 
 
 
-### 二、starter的基本用法：
+### 三、starter的基本用法：
 
 > 1、pom.xml引入依赖
 
@@ -194,7 +212,7 @@ public class ALiService {
 @RocketMQMessageListener(topic = "base_sms",tag = "Tag_user")
 public class UserMessageListener extends AbstractMessageListener<User> {
     /**
-     * 生产者
+     * 消息处理
      */
     @Override
     public void handle(User user) {
