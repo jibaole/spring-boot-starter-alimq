@@ -54,4 +54,15 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>Bukexuetang_Release</id>
+            <url>http://106.75.63.153:8081/repository/maven-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>Bukexuetang_Snapshot</id>
+            <url>http://106.75.63.153:8081/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

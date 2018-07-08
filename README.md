@@ -66,7 +66,7 @@
        <dependency>
             <groupId>cn.knowbox.book</groupId>
             <artifactId>spring-boot-starter-alimq</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0.0.RELEASE</version>
         </dependency>
 ```
          
@@ -92,7 +92,63 @@
 
 
 
-> 3、 使用producer，consumer只需要在相应类中依需要注入对应实例
+> 3、 使用producer只需要在相应类中依需要注入对应实例
+
+```java
+
+/**
+ * @author jibaole
+ * @version 1.0
+ * @desc 生产者-通用方法
+ * @date 2018/7/7 下午5:19
+ */
+@Slf4j
+@SuppressWarnings({"WeakerAccess", "unused"})
+public class RocketMQTemplate {
+
+    @Resource
+    private ProducerBean producer;
+
+    /****
+     * @Description: 同步发送
+     * @Param: [event]
+     * @Author: jibaole
+     */
+    public SendResult send(MessageEvent event) {}
+
+    /****
+     * @Description: 同步发送(带延迟时间)
+     * @Param: [event, delay]
+     * @Author: jibaole
+     */
+    public SendResult send(MessageEvent event, long delay) {}
+
+    /**
+     * @Description: 单向发送
+     * @Param: [event]
+     * @Author: jibaole
+     */
+    public void sendOneway(MessageEvent event) {}
+
+    /**
+     * @Description: 异步发送
+     * @Param: [event]
+     * @Author: jibaole
+     */
+    public void sendAsync(MessageEvent event) {}
+
+
+    /**
+     * @Description: 异步发送(带延迟时间)
+     * @Param: [event, delay]
+     * @Author: jibaole
+     */
+    public void sendAsync(MessageEvent event, long delay) {}
+
+
+}
+
+```
 
 ```java
 
@@ -103,17 +159,18 @@ public class ALiService {
    private RocketMQTemplate rocketMQTemplate;
    
     /**
-     * 生产者
+     * 生产者-调用
      */
     public void sentMsg() {
         /**封装消息*/
         MessageEvent event = new MessageEvent();
         event.setTopic("base_sms");
         event.setTag("Tag_user");
-        /**封装任意类型领域对象*/
+       
         User user = new User();
         user.setName("Paul");
         user.setAdds("北京市 昌平区 龙锦苑东二区");
+         /**封装任意类型领域对象*/
         event.setDomain(user);
         
         rocketMQTemplate.send(event);
@@ -150,5 +207,9 @@ public class UserMessageListener extends AbstractMessageListener<User> {
 ```
 * topic为必填，可以配置多个不同topic监听业务处理
 * tag为`*`时，表示：接收所有topic消息；业务处理逻辑相同多个tag时，用tag1||tag2||tag3||……||tagn
-		
+* 定义泛型：接收对象类型要与发送对象类型一致
+
+> 5、优点
+* 1、 使用简单：开箱即用,只需要简单配置
+* 2、分业务处理：生产-消费端可以自定义配置不同topic、不同tag。		
 
