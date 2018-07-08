@@ -1,10 +1,10 @@
-## 基于aliyun MQ服务的Spring boot starter
+## 基于aliyun MQ服务封装的SpringBoot starter [源码地址>>>](https://github.com/jibaole/spring-boot-starter-alimq)
 
 
 ### 一、接入概要说明
 
 * 快速入门：<https://help.aliyun.com/document_detail/34411.html>
-* Demo地址：<https://github.com/AliwareMQ/mq-demo>
+* 官网Demo地址：<https://github.com/AliwareMQ/mq-demo>
 
 ##### 1、通用参数说明
 
