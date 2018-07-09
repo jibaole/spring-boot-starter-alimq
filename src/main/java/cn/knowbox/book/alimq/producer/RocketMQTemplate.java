@@ -4,9 +4,6 @@ import com.aliyun.openservices.ons.api.*;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
 import cn.knowbox.book.alimq.event.MessageEvent;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.stereotype.Component;
 import org.springframework.util.SerializationUtils;
 import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
@@ -34,7 +31,7 @@ public class RocketMQTemplate {
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
             throw new RuntimeException("topic, tag, or body is null.");
         }
-        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event.getDomain()));
+        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         SendResult result = this.producer.send(message);
         log.info("send message success. ", result.toString());
         return result;
@@ -50,7 +47,7 @@ public class RocketMQTemplate {
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
             throw new RuntimeException("topic, tag, or body is null.");
         }
-        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event.getDomain()));
+        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         message.setStartDeliverTime(System.currentTimeMillis() + delay);
         SendResult result = this.producer.send(message);
         log.info("send message success. ", result.toString());
@@ -67,7 +64,7 @@ public class RocketMQTemplate {
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
             throw new RuntimeException("topic, tag, or body is null.");
         }
-        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event.getDomain()));
+        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         this.producer.sendOneway(message);
         log.info("send message success. ");
     }
@@ -82,7 +79,7 @@ public class RocketMQTemplate {
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
             throw new RuntimeException("topic, tag, or body is null.");
         }
-        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event.getDomain()));
+        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         this.producer.sendAsync(message, new DefaultSendCallback());
     }
 
@@ -97,7 +94,7 @@ public class RocketMQTemplate {
         if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
             throw new RuntimeException("topic, tag, or body is null.");
         }
-        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event.getDomain()));
+        Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         message.setStartDeliverTime(System.currentTimeMillis() + delay);
         this.producer.sendAsync(message, new DefaultSendCallback());
     }

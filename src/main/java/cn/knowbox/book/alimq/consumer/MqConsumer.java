@@ -1,7 +1,6 @@
 package cn.knowbox.book.alimq.consumer;
 
 import cn.knowbox.book.alimq.annotation.RocketMQMessageListener;
-import cn.knowbox.book.alimq.consumer.AbstractMessageListener;
 import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.exception.ONSClientException;
@@ -18,22 +17,19 @@ import java.util.Properties;
  * @date 2018/7/7 下午5:19
  */
 @Slf4j
-public class Consumer implements BeanPostProcessor {
+public class MqConsumer implements BeanPostProcessor {
 
     private Properties properties;
     private com.aliyun.openservices.ons.api.Consumer consumer;
-    private String topic;
 
-    public Consumer(Properties properties) {
+    public MqConsumer(Properties properties) {
         if (properties == null || properties.get(PropertyKeyConst.ConsumerId) == null
                 || properties.get(PropertyKeyConst.AccessKey) == null
                 || properties.get(PropertyKeyConst.SecretKey) == null
-                || properties.get(PropertyKeyConst.ONSAddr) == null
-                || properties.get("topic") == null) {
+                || properties.get(PropertyKeyConst.ONSAddr) == null) {
             throw new ONSClientException("consumer properties not set properly.");
         }
         this.properties = properties;
-        this.topic = properties.getProperty("topic");
     }
 
     public void start() {
@@ -45,16 +41,6 @@ public class Consumer implements BeanPostProcessor {
         if (this.consumer != null) {
             this.consumer.shutdown();
         }
-    }
-
-    /****
-     * @Description: 多个tag用'||'拼接，所有用*
-     * @Param: [tags, messageListener]
-     * @Author: jibaole
-     */
-    public void subscribe(String tags, AbstractMessageListener messageListener) {
-        log.info("subscribe [topic: {}, tags: {}, messageListener: {}]", topic, tags, messageListener.getClass().getCanonicalName());
-        consumer.subscribe(topic, tags, messageListener);
     }
 
     @Override
@@ -73,7 +59,7 @@ public class Consumer implements BeanPostProcessor {
         RocketMQMessageListener annotation = clazz.getAnnotation(RocketMQMessageListener.class);
         if (null != annotation) {
             AbstractMessageListener listener = (AbstractMessageListener) bean;
-            consumer.subscribe(annotation.topic(), annotation.tag(), listener);
+            consumer.subscribe(annotation.topic(), "*", listener);
         }
         return bean;
     }

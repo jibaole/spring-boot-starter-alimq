@@ -1,6 +1,6 @@
 package cn.knowbox.book.alimq;
 
-import cn.knowbox.book.alimq.consumer.Consumer;
+import cn.knowbox.book.alimq.consumer.MqConsumer;
 import cn.knowbox.book.alimq.producer.RocketMQTemplate;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
@@ -47,15 +47,14 @@ public class RocketMQAutoConfiguration {
     @Bean(initMethod="start", destroyMethod = "shutdown")
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "aliyun.mq.consumer",value = "enabled",havingValue = "true")
-    public Consumer mqConsumer(){
+    public MqConsumer mqConsumer(){
         Properties properties = new Properties();
         log.info("执行consumer初始化……");
         properties.setProperty(PropertyKeyConst.ConsumerId, propConfig.getConsumer().getProperty("consumerId"));
         properties.setProperty(PropertyKeyConst.AccessKey, propConfig.getAccessKey());
         properties.setProperty(PropertyKeyConst.SecretKey, propConfig.getSecretKey());
         properties.setProperty(PropertyKeyConst.ONSAddr, propConfig.getOnsAddr());
-        properties.setProperty("topic", propConfig.getTopic());
-        return  new Consumer(properties);
+        return  new MqConsumer(properties);
     }
 
     @Bean

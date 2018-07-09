@@ -36,9 +36,4 @@ public @interface RocketMQMessageListener {
      */
     String topic();
 
-    /**
-     * tag name(多个tag用'||'拼接，所有用*)
-     */
-    String tag() default "*";
-
 }
