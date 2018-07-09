@@ -4,7 +4,7 @@
 ### 一、RocketMQ相关说明
 
 * 快速入门：<https://help.aliyun.com/document_detail/34411.html>
-* 官网Demo地址：<https://github.com/AliwareMQ/mq-demo>
+
 
 > RocketMQ 物理部署结构
 
@@ -231,3 +231,10 @@ public class UserMessageListener extends AbstractMessageListener<User> {
 * 1、 使用简单：开箱即用,只需要简单配置
 * 2、分业务处理：生产-消费端可以自定义配置不同topic、不同tag。		
 
+
+
+
+### 相关参考
+----
+* 官网Demo地址：<https://github.com/AliwareMQ/mq-demo>
+* Apache的starter：<https://github.com/apache/rocketmq-externals/tree/master/rocketmq-spring-boot-starter>
