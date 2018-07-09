@@ -73,7 +73,8 @@
 |金融云 Region：华东1	|http://jbponsaddr-internal.aliyun.com:8080/rocketmq/nsaddr4client-internal|
 |金融云 Region：华东2、华南1|	http://mq4finance-sz.addr.aliyun.com:8080/rocketmq/nsaddr4client-internal|
 
-
+> 5、产品费用详情
+![MQ费用详细](http://pacssnntv.bkt.clouddn.com/20180709100117.png)
 
 
 ### 三、starter的基本用法：
