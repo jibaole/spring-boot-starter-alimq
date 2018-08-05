@@ -58,6 +58,8 @@ public class RocketMQAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "aliyun.mq.producer",value = "enabled",havingValue = "true")
     public RocketMQTemplate rocketMQTemplate(){
         RocketMQTemplate rocketMQTemplate = new RocketMQTemplate();
         return rocketMQTemplate;

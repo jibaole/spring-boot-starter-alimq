@@ -1,13 +1,10 @@
 package cn.knowbox.book.alimq.consumer;
 
-import cn.knowbox.book.alimq.annotation.RocketMQMessageListener;
 import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.exception.ONSClientException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.aop.support.AopUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Properties;
 
 /**
@@ -17,9 +14,10 @@ import java.util.Properties;
  * @date 2018/7/7 下午5:19
  */
 @Slf4j
-public class MqConsumer implements BeanPostProcessor {
+public class MqConsumer  {
 
     private Properties properties;
+    @Autowired
     private com.aliyun.openservices.ons.api.Consumer consumer;
 
     public MqConsumer(Properties properties) {
@@ -43,24 +41,25 @@ public class MqConsumer implements BeanPostProcessor {
         }
     }
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        return null;
+
+
+
+    /**
+     * @des
+     * @param topic
+     * @param messageListener
+     */
+    public void subscribe(String topic, AbstractMessageListener messageListener) {
+        consumer.subscribe(topic, "*", messageListener);
     }
 
     /**
-     * @Description: 获取所有消费者订阅内容(Topic、Tag)
-     * @Param: [bean, beanName]
-     * @Author: jibaole
+     * @des 多个tag用'||'拼接，所有用*
+     * @param topic
+     * @param tag
+     * @param messageListener
      */
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        Class<?> clazz = AopUtils.getTargetClass(bean);
-        RocketMQMessageListener annotation = clazz.getAnnotation(RocketMQMessageListener.class);
-        if (null != annotation) {
-            AbstractMessageListener listener = (AbstractMessageListener) bean;
-            consumer.subscribe(annotation.topic(), "*", listener);
-        }
-        return bean;
+    public void subscribe(String topic,String tag, AbstractMessageListener messageListener) {
+        consumer.subscribe(topic, tag, messageListener);
     }
 }

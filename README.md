@@ -1,4 +1,4 @@
-## 基于aliyun MQ服务封装的SpringBoot starter [源码地址>>>](https://github.com/jibaole/spring-boot-starter-alimq)
+## 基于aliyun MQ服务封装的SpringBoot starter 
 
 
 ### 一、RocketMQ相关说明
@@ -211,7 +211,7 @@ public class ALiService {
  */
 
 @Service
-@RocketMQMessageListener(topic = "base_sms",tag = "Tag_user")
+@RocketMQMessageListener(topic = "base_sms")
 public class UserMessageListener extends AbstractMessageListener<User> {
     /**
      * 消息处理
@@ -226,12 +226,11 @@ public class UserMessageListener extends AbstractMessageListener<User> {
 
 ```
 * topic为必填，可以配置多个不同topic监听业务处理
-* tag为`*`时，表示：接收所有topic消息；业务处理逻辑相同多个tag时，用tag1||tag2||tag3||……||tagn
-* 定义泛型：接收对象类型要与发送对象类型一致
+
 
 > 5、优点
 * 1、 使用简单：开箱即用,只需要简单配置
-* 2、分业务处理：生产-消费端可以自定义配置不同topic、不同tag。		
+* 2、分业务处理：针对同一topic、通过tag区分具体业务场景。		
 
 
 
