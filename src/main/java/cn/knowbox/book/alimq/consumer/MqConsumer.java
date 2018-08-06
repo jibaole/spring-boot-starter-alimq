@@ -1,10 +1,10 @@
 package cn.knowbox.book.alimq.consumer;
 
+import com.aliyun.openservices.ons.api.Consumer;
 import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.exception.ONSClientException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Properties;
 
 /**
@@ -17,8 +17,8 @@ import java.util.Properties;
 public class MqConsumer  {
 
     private Properties properties;
-    @Autowired
-    private com.aliyun.openservices.ons.api.Consumer consumer;
+
+    private Consumer consumer;
 
     public MqConsumer(Properties properties) {
         if (properties == null || properties.get(PropertyKeyConst.ConsumerId) == null
