@@ -36,4 +36,9 @@ public @interface RocketMQMessageListener {
      */
     String topic();
 
+    /**
+     * tag name
+     */
+    String tag() default "*";
+
 }

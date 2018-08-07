@@ -28,8 +28,8 @@ public class RocketMQTemplate {
      */
     public SendResult send(MessageEvent event) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
-        if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
-            throw new RuntimeException("topic, tag, or body is null.");
+        if (StringUtils.isEmpty(event.getTopic())  || null == event.getDomain()) {
+            throw new RuntimeException("topic, or body is null.");
         }
         Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         SendResult result = this.producer.send(message);
@@ -44,8 +44,8 @@ public class RocketMQTemplate {
      */
     public SendResult send(MessageEvent event, long delay) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
-        if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
-            throw new RuntimeException("topic, tag, or body is null.");
+        if (StringUtils.isEmpty(event.getTopic())  || null == event.getDomain()) {
+            throw new RuntimeException("topic, or body is null.");
         }
         Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         message.setStartDeliverTime(System.currentTimeMillis() + delay);
@@ -61,8 +61,8 @@ public class RocketMQTemplate {
      */
     public void sendOneway(MessageEvent event) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
-        if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
-            throw new RuntimeException("topic, tag, or body is null.");
+        if (StringUtils.isEmpty(event.getTopic())  || null == event.getDomain()) {
+            throw new RuntimeException("topic, or body is null.");
         }
         Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         this.producer.sendOneway(message);
@@ -76,8 +76,8 @@ public class RocketMQTemplate {
      */
     public void sendAsync(MessageEvent event) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
-        if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
-            throw new RuntimeException("topic, tag, or body is null.");
+        if (StringUtils.isEmpty(event.getTopic())  || null == event.getDomain()) {
+            throw new RuntimeException("topic, or body is null.");
         }
         Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         this.producer.sendAsync(message, new DefaultSendCallback());
@@ -91,8 +91,8 @@ public class RocketMQTemplate {
      */
     public void sendAsync(MessageEvent event, long delay) {
         log.info("start to send message. [topic: {}, tag: {}]", event.getTopic(), event.getTag());
-        if (StringUtils.isEmpty(event.getTopic()) || StringUtils.isEmpty(event.getTag()) || null == event.getDomain()) {
-            throw new RuntimeException("topic, tag, or body is null.");
+        if (StringUtils.isEmpty(event.getTopic())  || null == event.getDomain()) {
+            throw new RuntimeException("topic, or body is null.");
         }
         Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         message.setStartDeliverTime(System.currentTimeMillis() + delay);

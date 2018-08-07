@@ -1,10 +1,14 @@
 package cn.knowbox.book.alimq.consumer;
 
+import cn.knowbox.book.alimq.annotation.RocketMQMessageListener;
 import com.aliyun.openservices.ons.api.Consumer;
 import com.aliyun.openservices.ons.api.ONSFactory;
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
 import com.aliyun.openservices.ons.api.exception.ONSClientException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import java.util.Properties;
 
 /**
@@ -14,10 +18,9 @@ import java.util.Properties;
  * @date 2018/7/7 下午5:19
  */
 @Slf4j
-public class MqConsumer  {
+public class MqConsumer implements BeanPostProcessor {
 
     private Properties properties;
-
     private Consumer consumer;
 
     public MqConsumer(Properties properties) {
@@ -41,25 +44,24 @@ public class MqConsumer  {
         }
     }
 
-
-
-
-    /**
-     * @des
-     * @param topic
-     * @param messageListener
-     */
-    public void subscribe(String topic, AbstractMessageListener messageListener) {
-        consumer.subscribe(topic, "*", messageListener);
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
     }
 
     /**
-     * @des 多个tag用'||'拼接，所有用*
-     * @param topic
-     * @param tag
-     * @param messageListener
+     * @Description: 获取所有消费者订阅内容(Topic、Tag)
+     * @Param: [bean, beanName]
+     * @Author: jibaole
      */
-    public void subscribe(String topic,String tag, AbstractMessageListener messageListener) {
-        consumer.subscribe(topic, tag, messageListener);
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        Class<?> clazz = AopUtils.getTargetClass(bean);
+        RocketMQMessageListener annotation = clazz.getAnnotation(RocketMQMessageListener.class);
+        if (null != annotation) {
+            AbstractMessageListener listener = (AbstractMessageListener) bean;
+            consumer.subscribe(annotation.topic(), annotation.tag(), listener);
+        }
+        return bean;
     }
 }
