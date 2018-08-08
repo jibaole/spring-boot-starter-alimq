@@ -212,15 +212,15 @@ public class ALiService {
 
 @Service
 @RocketMQMessageListener(topic = "base_sms")
-public class UserMessageListener extends AbstractMessageListener<User> {
+public class UserMessageListener extends AbstractMessageListener<MessageEvent> {
     /**
      * 消息处理
      */
     @Override
-    public void handle(User user) {
-        System.out.println(user instanceof User);
-
-        System.out.println(user.toString());
+    public void handle(MessageEvent messageEvent) {
+    	Object domain = messageEvent.getDomain();
+        System.out.println(domain instanceof User);
+        System.out.println(domain.toString());
     }
 }
 
