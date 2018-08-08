@@ -1,5 +1,6 @@
 package cn.knowbox.book.alimq.consumer;
 
+import cn.knowbox.book.alimq.event.MessageEvent;
 import com.aliyun.openservices.ons.api.Action;
 import com.aliyun.openservices.ons.api.ConsumeContext;
 import com.aliyun.openservices.ons.api.Message;
@@ -17,11 +18,16 @@ import org.springframework.util.SerializationUtils;
 public abstract class AbstractMessageListener<T> implements MessageListener {
     public abstract void handle(T body);
 
+    public void event(MessageEvent event){}
+
     @Override
     public Action consume(Message message, ConsumeContext context) {
         log.info("接收消息:[topic: {}, tag: {}, msgId: {}, startDeliverTime: {}]", message.getTopic(), message.getTag(), message.getMsgID(), message.getStartDeliverTime());
         try {
-            handle((T)SerializationUtils.deserialize(message.getBody()));
+
+            MessageEvent messageEvent = (MessageEvent)SerializationUtils.deserialize(message.getBody());
+            event(messageEvent);
+            handle((T)messageEvent.getDomain());
             log.info("handle message success.");
             return Action.CommitMessage;
         } catch (Exception e) {
@@ -30,4 +36,6 @@ public abstract class AbstractMessageListener<T> implements MessageListener {
             return Action.ReconsumeLater;
         }
     }
+
+
 }
