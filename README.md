@@ -216,10 +216,15 @@ public class UserMessageListener extends AbstractMessageListener<User> {
     /**
      * 消息处理
      */
+     @Override
+     public void event(MessageEvent event) { 
+         System.out.println(event.getDomain() instanceof User);
+         System.out.println(event.getDomain().toString()); 
+     }
+    
     @Override
     public void handle(User user) {
         System.out.println(user instanceof User);
-
         System.out.println(user.toString());
     }
 }
