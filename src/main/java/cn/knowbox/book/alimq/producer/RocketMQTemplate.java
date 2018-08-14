@@ -121,7 +121,7 @@ public class RocketMQTemplate {
     }
     
     /****
-     * @Description: 同步发送(带延迟时间)
+     * @Description: 同步发送(延迟定时发送,请注意保证时间正确)
      * @Param: [event, delay]
      * @Author: jibaole
      */
@@ -135,13 +135,13 @@ public class RocketMQTemplate {
     	long delay = date.getTime()-now.getTime();
     	if(delay<= 0) {
     		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    		throw new RuntimeException("消息发送时间:"+sdf.format(date)+" 小于当前时间:"+sdf.format(now));
+    		log.warn("消息发送时间:"+sdf.format(date)+" 小于当前时间:"+sdf.format(now));
     	}
 		return delay;
 	}
     
     /**
-     * @Description: 异步发送(带延迟时间)
+     * @Description: 异步发送(延迟定时发送,请注意保证时间正确)
      * @Param: [event, delay]
      * @Author: jibaole
      */
@@ -151,7 +151,7 @@ public class RocketMQTemplate {
     }
     
     /****
-     * @Description: 同步发送(带延迟时间)
+     * @Description: 同步发送(延迟定时发送,请注意保证时间正确)
      * @Param: [event, delay]
      * @Author: jibaole
      */
@@ -166,13 +166,13 @@ public class RocketMQTemplate {
     	long delay = date.atZone(zone).toInstant().getEpochSecond() - now.atZone(zone).toInstant().getEpochSecond();
     	if(delay<= 0) {
     		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    		throw new RuntimeException("消息发送时间:"+sdf.format(date)+" 小于当前时间:"+sdf.format(now));
+    		log.warn("消息发送时间:"+sdf.format(date)+" 小于当前时间:"+sdf.format(now));
     	}
 		return delay;
 	}
     
     /**
-     * @Description: 异步发送(带延迟时间)
+     * @Description: 异步发送(延迟定时发送,请注意保证时间正确)
      * @Param: [event, delay]
      * @Author: jibaole
      */
