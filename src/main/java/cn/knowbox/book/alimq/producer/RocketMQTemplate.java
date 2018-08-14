@@ -48,7 +48,7 @@ public class RocketMQTemplate {
     public SendResult send(MessageEvent event) {
     	Message message = getMessage(event);
         SendResult result = this.producer.send(message);
-        log.info("send message success. ", result.toString());
+        log.info("send message success. {}", result.toString());
         return result;
     }
 
@@ -61,7 +61,7 @@ public class RocketMQTemplate {
     	Message message = getMessage(event);
         message.setStartDeliverTime(System.currentTimeMillis() + delay);
         SendResult result = this.producer.send(message);
-        log.info("send message success. ", result.toString());
+        log.info("send message success. {}", result.toString());
         return result;
     }
 
@@ -163,12 +163,13 @@ public class RocketMQTemplate {
 	private long getDelay(LocalDateTime date) {
 		ZoneId zone = ZoneId.systemDefault();
 		LocalDateTime now = LocalDateTime.now();
+		//时间间隔秒数
     	long delay = date.atZone(zone).toInstant().getEpochSecond() - now.atZone(zone).toInstant().getEpochSecond();
     	if(delay<= 0) {
     		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     		log.warn("消息发送时间:"+sdf.format(date)+" 小于当前时间:"+sdf.format(now));
     	}
-		return delay;
+		return delay * 1000;
 	}
     
     /**
