@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.util.StringUtils;
+
 import java.util.Properties;
 
 /**
@@ -59,8 +61,10 @@ public class MqConsumer implements BeanPostProcessor {
         Class<?> clazz = AopUtils.getTargetClass(bean);
         RocketMQMessageListener annotation = clazz.getAnnotation(RocketMQMessageListener.class);
         if (null != annotation) {
-            AbstractMessageListener listener = (AbstractMessageListener) bean;
-            consumer.subscribe(annotation.topic(), annotation.tag(), listener);
+            @SuppressWarnings("rawtypes")
+			AbstractMessageListener listener = (AbstractMessageListener) bean;    
+            String subExpression = StringUtils.arrayToDelimitedString(annotation.tag(), " || ");
+            consumer.subscribe(annotation.topic(), subExpression, listener);
         }
         return bean;
     }

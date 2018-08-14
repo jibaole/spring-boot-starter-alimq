@@ -4,6 +4,10 @@
 ### 一、RocketMQ相关说明
 
 * 快速入门：<https://help.aliyun.com/document_detail/34411.html>
+* [收发顺序消息](https://help.aliyun.com/document_detail/49323.html?spm=a2c4g.11186623.6.602.HOqOX3)
+* [收发事务消息](https://help.aliyun.com/document_detail/29548.html?spm=a2c4g.11186623.6.603.LFUtTE)
+* [收发延时消息](https://help.aliyun.com/document_detail/29549.html?spm=a2c4g.11186623.6.604.sCq6lR)
+* [收发定时消息](https://help.aliyun.com/document_detail/29550.html?spm=a2c4g.11186623.6.605.Pxqkpc)
 
 
 > RocketMQ 物理部署结构

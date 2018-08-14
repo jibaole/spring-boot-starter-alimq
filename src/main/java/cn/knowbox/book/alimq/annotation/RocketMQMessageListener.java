@@ -39,6 +39,6 @@ public @interface RocketMQMessageListener {
     /**
      * tag name
      */
-    String tag() default "*";
+    String[] tag() default "*";
 
 }
