@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderMessageTemplate {
 
     @Resource
-    private OrderProducerBean producer;
+    private OrderProducerBean orderProducer;
 
     /****
      * @Description: 同步发送顺序消息
@@ -40,8 +40,8 @@ public class OrderMessageTemplate {
         }
         Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         message.setKey(event.generateTxId());
-        SendResult result = this.producer.send(message,sharding);
-        log.info("send message success. ", result.toString());
+        SendResult result = this.orderProducer.send(message,sharding);
+        log.info("send message success. "+ result.toString());
         return result;
     }
     

@@ -22,11 +22,11 @@ public abstract class AbstractMessageListener<T> implements MessageListener {
         log.info("接收消息:[topic: {}, tag: {}, msgId: {}, startDeliverTime: {}]", message.getTopic(), message.getTag(), message.getMsgID(), message.getStartDeliverTime());
         try {
             handle((T)SerializationUtils.deserialize(message.getBody()));
-            log.info("handle message success.");
+            log.info("handle message success. message id:"+message.getMsgID());
             return Action.CommitMessage;
         } catch (Exception e) {
             //消费失败
-            log.warn("handle message fail, requeue it.", e);
+            log.warn("handle message fail, requeue it. message id:"+message.getMsgID(), e);
             return Action.ReconsumeLater;
         }
     }

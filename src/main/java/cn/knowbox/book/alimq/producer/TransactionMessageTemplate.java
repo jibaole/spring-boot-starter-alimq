@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TransactionMessageTemplate {
 
     @Resource
-    private TransactionProducerBean producer;
+    private TransactionProducerBean transactionProducer;
 
     /****
      * @Description: 同步发送顺序消息
@@ -41,8 +41,8 @@ public class TransactionMessageTemplate {
         }
         Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         message.setKey(event.generateTxId());
-        SendResult result = this.producer.send(message, executer, null);
-        log.info("send message success. ", result.toString());
+        SendResult result = this.transactionProducer.send(message, executer, null);
+        log.info("send message success. "+ result.toString());
         return result;
     }
 }
