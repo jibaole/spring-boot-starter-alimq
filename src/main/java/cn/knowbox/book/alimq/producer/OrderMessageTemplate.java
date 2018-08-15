@@ -28,7 +28,6 @@ public class OrderMessageTemplate {
      * @Description: 同步发送顺序消息
      * @Param: [event]
      * @param: sharding 分区顺序消息中区分不同分区的关键字段，sharding key 于普通消息的 key 是完全不同的概念。
-     * @Author: jibaole
      */
     public SendResult send(MessageEvent event,String sharding) {
     	if(event == null) {
@@ -49,7 +48,6 @@ public class OrderMessageTemplate {
      * @Description: 同步发送顺序消息
      * @Param: [event]
      * @param: sharding 分区顺序消息中区分不同分区的关键字段，sharding key 于普通消息的 key 是完全不同的概念。
-     * @Author: jibaole
      */
     public SendResult send(MessageEvent event) {
     	return send(event, MessageOrderTypeEnum.GLOBAL);

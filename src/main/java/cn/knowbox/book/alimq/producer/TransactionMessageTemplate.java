@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.SendResult;
 import com.aliyun.openservices.ons.api.bean.TransactionProducerBean;
+import com.aliyun.openservices.ons.api.transaction.LocalTransactionChecker;
 import com.aliyun.openservices.ons.api.transaction.LocalTransactionExecuter;
 
 import cn.knowbox.book.alimq.event.MessageEvent;
@@ -24,14 +25,28 @@ public class TransactionMessageTemplate {
 
     @Resource
     private TransactionProducerBean transactionProducer;
+    
+    /**
+     * 使用前需要调用该方法设置localTransactionChecker
+     * @param localTransactionChecker
+     */
+    public void init(LocalTransactionChecker localTransactionChecker) {
+    	transactionProducer.setLocalTransactionChecker(localTransactionChecker);
+    }
+    
+    /**
+     * 使用前需要调用该方法设置localTransactionChecker
+     * @param localTransactionChecker
+     */
+    public void init(TransactionChecker transactionCheck) {
+    	init(new LocalTransactionCheckerImpl(transactionCheck));
+    }
 
     /****
-     * @Description: 同步发送顺序消息
+     * @Description: 同步发送事务消息
      * @Param: [event]
-     * @param: sharding 分区顺序消息中区分不同分区的关键字段，sharding key 于普通消息的 key 是完全不同的概念。
-     * @Author: jibaole
      */
-    public SendResult send(MessageEvent event,LocalTransactionExecuter executer) {
+    public SendResult send(MessageEvent event,LocalTransactionExecuter executer,Object arg) {
     	if(event == null) {
     		throw new RuntimeException("event is null.");
     	}
@@ -41,8 +56,17 @@ public class TransactionMessageTemplate {
         }
         Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         message.setKey(event.generateTxId());
-        SendResult result = this.transactionProducer.send(message, executer, null);
+        SendResult result = this.transactionProducer.send(message, executer, arg);
         log.info("send message success. "+ result.toString());
         return result;
     }
+    
+    /****
+     * @Description: 同步发送事务消息
+     * @Param: [event]
+     */
+    public SendResult send(MessageEvent event,TransactionExecuter transactionExecuter,Object arg) {
+    	return send(event, new LocalTransactionExecuterImpl(transactionExecuter), arg);
+    }
+
 }
