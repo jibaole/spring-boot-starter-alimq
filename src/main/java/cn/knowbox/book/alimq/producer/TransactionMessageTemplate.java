@@ -30,16 +30,9 @@ public class TransactionMessageTemplate {
      * 使用前需要调用该方法设置localTransactionChecker
      * @param localTransactionChecker
      */
-    public void init(LocalTransactionChecker localTransactionChecker) {
-    	transactionProducer.setLocalTransactionChecker(localTransactionChecker);
-    }
-    
-    /**
-     * 使用前需要调用该方法设置localTransactionChecker
-     * @param localTransactionChecker
-     */
     public void init(TransactionChecker transactionCheck) {
-    	init(new LocalTransactionCheckerImpl(transactionCheck));
+    	LocalTransactionCheckerImpl checkerImpl = (LocalTransactionCheckerImpl)transactionProducer.getLocalTransactionChecker();
+    	checkerImpl.init(transactionCheck);
     }
 
     /****

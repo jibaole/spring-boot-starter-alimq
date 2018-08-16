@@ -1,6 +1,7 @@
 package cn.knowbox.book.alimq;
 
 import cn.knowbox.book.alimq.consumer.MqConsumer;
+import cn.knowbox.book.alimq.producer.LocalTransactionCheckerImpl;
 import cn.knowbox.book.alimq.producer.OrderMessageTemplate;
 import cn.knowbox.book.alimq.producer.RocketMQTemplate;
 import cn.knowbox.book.alimq.producer.TransactionMessageTemplate;
@@ -77,6 +78,8 @@ public class RocketMQAutoConfiguration {
         properties.put(PropertyKeyConst.SecretKey, propConfig.getSecretKey());
         properties.put(PropertyKeyConst.ONSAddr, propConfig.getOnsAddr());
         producerBean.setProperties(properties);
+        //LocalTransactionCheckerImpl必须在start方法调用前设置
+        producerBean.setLocalTransactionChecker(new LocalTransactionCheckerImpl(null));
         producerBean.start();
         return producerBean;
     }

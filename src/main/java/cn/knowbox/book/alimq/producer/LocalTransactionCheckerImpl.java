@@ -27,8 +27,17 @@ public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
 	public LocalTransactionCheckerImpl(TransactionChecker transactionCheck) {
 		this.transactionCheck = transactionCheck;
 	}
+	
+	public void init(TransactionChecker transactionCheck) {
+		this.transactionCheck = transactionCheck;
+	}
+	
     @Override
     public TransactionStatus check(Message msg) {
+    	if(transactionCheck == null) {
+    		log.warn("mq Check 被回调但 LocalTransactionCheckerImpl 需要的 TransactionChecker尚未设置,原因:TransactionMessageTemplate的init方法尚未被调用");
+    		return TransactionStatus.Unknow;
+    	}
         //消息 ID（有可能消息体一样，但消息 ID 不一样，当前消息属于 Half 消息，所以消息 ID 在控制台无法查询）
         String msgId = msg.getMsgID();
         //消息体内容进行 crc32，也可以使用其它的方法如 MD5
@@ -38,10 +47,21 @@ public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
         //如果要求消息绝对不重复，推荐做法是对消息体使用 crc32 或  md5 来防止重复消息
         TransactionStatus transactionStatus = TransactionStatus.Unknow;
         MessageEvent messageEvent = null;
+        Object object = null;
         try {
-        	messageEvent = (MessageEvent)SerializationUtils.deserialize(msg.getBody());
+        	object = SerializationUtils.deserialize(msg.getBody());
+        	if(object instanceof MessageEvent) {
+        		messageEvent = (MessageEvent)object;
+        	}else {
+        		log.error("数据异常,回滚事务,message body:"+JSON.toJSONString(object));
+        		return TransactionStatus.RollbackTransaction;
+        	}
         	transactionStatus = transactionCheck.check(messageEvent,crc32Id);
-        } catch (Exception e) {
+        }catch (IllegalArgumentException e) {
+			if(object == null) {
+				log.error("SerializationUtils.deserialize 反序列化失败,message body:"+msg.getBody() == null?null:new String(msg.getBody()));
+			}
+		} catch (Exception e) {
         	log.error("TransactionChecker.check has error.message id:"+msgId+" , message:"+JSON.toJSONString(messageEvent),e);
         }
         return transactionStatus == null?TransactionStatus.Unknow:transactionStatus;
