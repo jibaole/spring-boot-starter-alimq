@@ -59,7 +59,8 @@ public class LocalTransactionCheckerImpl implements LocalTransactionChecker {
         	transactionStatus = transactionCheck.check(messageEvent,crc32Id);
         }catch (IllegalArgumentException e) {
 			if(object == null) {
-				log.error("SerializationUtils.deserialize 反序列化失败,message body:"+msg.getBody() == null?null:new String(msg.getBody()));
+				log.error("SerializationUtils.deserialize 反序列化失败,自动回滚事务,message body:"+(msg.getBody() == null?null:new String(msg.getBody())));
+				return TransactionStatus.RollbackTransaction;
 			}
 		} catch (Exception e) {
         	log.error("TransactionChecker.check has error.message id:"+msgId+" , message:"+JSON.toJSONString(messageEvent),e);
