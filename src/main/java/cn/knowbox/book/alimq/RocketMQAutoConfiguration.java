@@ -1,9 +1,16 @@
 package cn.knowbox.book.alimq;
 
 import cn.knowbox.book.alimq.consumer.MqConsumer;
+import cn.knowbox.book.alimq.producer.LocalTransactionCheckerImpl;
+import cn.knowbox.book.alimq.producer.OrderMessageTemplate;
 import cn.knowbox.book.alimq.producer.RocketMQTemplate;
+import cn.knowbox.book.alimq.producer.TransactionMessageTemplate;
+
 import com.aliyun.openservices.ons.api.PropertyKeyConst;
+import com.aliyun.openservices.ons.api.bean.OrderProducerBean;
 import com.aliyun.openservices.ons.api.bean.ProducerBean;
+import com.aliyun.openservices.ons.api.bean.TransactionProducerBean;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -42,6 +49,40 @@ public class RocketMQAutoConfiguration {
         producerBean.start();
         return producerBean;
     }
+    
+    @Bean(name = "orderProducer",initMethod = "start", destroyMethod = "shutdown")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "aliyun.mq.producer",value = "enabled",havingValue = "true")
+    public OrderProducerBean orderProducer() {
+    	OrderProducerBean producerBean = new OrderProducerBean();
+        Properties properties = new Properties();
+        log.info("执行producer初始化……");
+        properties.put(PropertyKeyConst.ProducerId, propConfig.getProducer().getProperty("producerId"));
+        properties.put(PropertyKeyConst.AccessKey, propConfig.getAccessKey());
+        properties.put(PropertyKeyConst.SecretKey, propConfig.getSecretKey());
+        properties.put(PropertyKeyConst.ONSAddr, propConfig.getOnsAddr());
+        producerBean.setProperties(properties);
+        producerBean.start();
+        return producerBean;
+    }
+    
+    @Bean(name = "transactionProducer",initMethod = "start", destroyMethod = "shutdown")
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "aliyun.mq.producer",value = "enabled",havingValue = "true")
+    public TransactionProducerBean transactionProducer() {
+    	TransactionProducerBean producerBean = new TransactionProducerBean();
+        Properties properties = new Properties();
+        log.info("执行producer初始化……");
+        properties.put(PropertyKeyConst.ProducerId, propConfig.getProducer().getProperty("producerId"));
+        properties.put(PropertyKeyConst.AccessKey, propConfig.getAccessKey());
+        properties.put(PropertyKeyConst.SecretKey, propConfig.getSecretKey());
+        properties.put(PropertyKeyConst.ONSAddr, propConfig.getOnsAddr());
+        producerBean.setProperties(properties);
+        //LocalTransactionCheckerImpl必须在start方法调用前设置
+        producerBean.setLocalTransactionChecker(new LocalTransactionCheckerImpl(null));
+        producerBean.start();
+        return producerBean;
+    }
 
 
     @Bean(initMethod="start", destroyMethod = "shutdown")
@@ -63,5 +104,21 @@ public class RocketMQAutoConfiguration {
     public RocketMQTemplate rocketMQTemplate(){
         RocketMQTemplate rocketMQTemplate = new RocketMQTemplate();
         return rocketMQTemplate;
+    }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "aliyun.mq.producer",value = "enabled",havingValue = "true")
+    public OrderMessageTemplate orderMessageTemplate(){
+    	OrderMessageTemplate orderMessageTemplate = new OrderMessageTemplate();
+        return orderMessageTemplate;
+    }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "aliyun.mq.producer",value = "enabled",havingValue = "true")
+    public TransactionMessageTemplate transactionMessageTemplate(){
+    	TransactionMessageTemplate transactionMessageTemplate = new TransactionMessageTemplate();
+        return transactionMessageTemplate;
     }
 }

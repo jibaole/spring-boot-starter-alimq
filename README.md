@@ -4,6 +4,10 @@
 ### 一、RocketMQ相关说明
 
 * 快速入门：<https://help.aliyun.com/document_detail/34411.html>
+* [收发顺序消息](https://help.aliyun.com/document_detail/49323.html?spm=a2c4g.11186623.6.602.HOqOX3)
+* [收发事务消息](https://help.aliyun.com/document_detail/29548.html?spm=a2c4g.11186623.6.603.LFUtTE)
+* [收发延时消息](https://help.aliyun.com/document_detail/29549.html?spm=a2c4g.11186623.6.604.sCq6lR)
+* [收发定时消息](https://help.aliyun.com/document_detail/29550.html?spm=a2c4g.11186623.6.605.Pxqkpc)
 
 
 > RocketMQ 物理部署结构
@@ -175,11 +179,11 @@ public class RocketMQTemplate {
 
 @Service
 public class ALiService {
-@Autowired
+	 @Autowired
    private RocketMQTemplate rocketMQTemplate;
    
     /**
-     * 生产者-调用
+     * 普通消息生产者-调用
      */
     public void sentMsg() {
         /**封装消息*/
@@ -194,6 +198,85 @@ public class ALiService {
         event.setDomain(user);
         
         rocketMQTemplate.send(event);
+    }
+}
+
+```
+```java
+
+
+@Service
+public class ALiService {
+	 @Autowired
+   private OrderMessageTemplate rocketMQTemplate;
+   
+    /**
+     * 顺序消息生产者-调用
+     */
+    public void sentMsg() {
+        /**封装消息*/
+        MessageEvent event = new MessageEvent();
+        event.setTopic("base_sms");
+        event.setTag("Tag_user");
+       
+        User user = new User();
+        user.setName("Paul");
+        user.setAdds("北京市 昌平区 龙锦苑东二区");
+         /**封装任意类型领域对象*/
+        event.setDomain(user);
+        
+        rocketMQTemplate.send(event);
+    }
+}
+
+```
+```java
+
+
+@Service
+public class ALiService {
+	@Autowired
+	private TransactionMessageTemplate transactionMessageTemplate;
+	
+  @PostConstruct
+	public void init() {
+		//发事务消息前需要初始化LocalTransactionCheckerImpl
+		transactionMessageTemplate.init(new TransactionChecker() {
+			
+			@Override
+			public TransactionStatus check(MessageEvent messageEvent, Long hashValue) {
+				TransactionStatus status = TransactionDemo.checker();
+				System.out.println("sysout TransactionChecker.check 方法被调用:"+JSON.toJSONString(messageEvent));
+				return status;
+			}
+		});
+		log.info("初始化 LocalTransactionChecker 完成");
+	}
+	
+    /**
+     * 事务消息生产者-调用
+     */
+    public void sentMsg() {
+        /**封装消息*/
+        MessageEvent event = new MessageEvent();
+        event.setTopic("base_sms");
+        event.setTag("Tag_user");
+       
+        User user = new User();
+        user.setName("Paul");
+        user.setAdds("北京市 昌平区 龙锦苑东二区");
+         /**封装任意类型领域对象*/
+        event.setDomain(user);
+        
+        transactionMessageTemplate.send(event,new TransactionExecuter() {
+			
+					@Override
+					public TransactionStatus executer(MessageEvent messageEvent, Long hashValue, Object arg) {
+						String transactionId = TransactionDemo.createTransaction();
+						TransactionStatus status = TransactionDemo.checker();
+						return status;
+					}
+				),"参数对象,以本字符串示例,会传递给TransactionExecuter.executer");
     }
 }
 

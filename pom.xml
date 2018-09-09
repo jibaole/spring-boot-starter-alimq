@@ -6,7 +6,7 @@
 
     <groupId>cn.knowbox.book</groupId>
     <artifactId>spring-boot-starter-alimq</artifactId>
-    <version>1.0.0.RELEASE</version>
+    <version>1.1.0.RELEASE</version>
     <build>
         <plugins>
             <plugin>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>com.aliyun.openservices</groupId>
             <artifactId>ons-client</artifactId>
-            <version>1.7.1.Final</version>
+            <version>1.7.8.Final</version>
         </dependency>
         <!--lombok-->
         <dependency>
