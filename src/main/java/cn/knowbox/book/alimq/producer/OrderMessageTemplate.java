@@ -39,6 +39,9 @@ public class OrderMessageTemplate {
         }
         Message message = new Message(event.getTopic(), event.getTag(), SerializationUtils.serialize(event));
         message.setKey(event.generateTxId());
+        message.putUserProperties("createdDate", String.valueOf(event.getCreatedDate()));
+        message.putUserProperties("timeoutLimit", String.valueOf(event.getTimeoutLimit()));
+        message.putUserProperties("consumeLimit", String.valueOf(event.getConsumeLimit()));
         SendResult result = this.orderProducer.send(message,sharding);
         log.info("send message success. "+ result.toString());
         return result;
