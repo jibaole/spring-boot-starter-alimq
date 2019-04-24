@@ -49,6 +49,15 @@ public class MessageEvent implements Serializable {
      */
     private long createdDate = System.currentTimeMillis();
 
+    /**
+     * 超时限制
+     */
+    private long timeoutLimit;
+
+    /**
+     * 消费次数限制
+     */
+    private Integer consumeLimit;
 
     /**
      * 方便的生成TxId的方法

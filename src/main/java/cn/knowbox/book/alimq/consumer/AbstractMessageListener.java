@@ -7,6 +7,8 @@ import com.aliyun.openservices.ons.api.MessageListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.SerializationUtils;
 
+import java.util.Objects;
+
 /**
  * @author jibaole
  * @version 1.0
@@ -20,6 +22,23 @@ public abstract class AbstractMessageListener<T> implements MessageListener {
     @Override
     public Action consume(Message message, ConsumeContext context) {
         log.info("接收消息:[topic: {}, tag: {}, msgId: {}, startDeliverTime: {}]", message.getTopic(), message.getTag(), message.getMsgID(), message.getStartDeliverTime());
+        String consumeLimitProperty = message.getUserProperties("consumeLimit");
+        String timeoutLimitProperty = message.getUserProperties("consumeLimit");
+        if (Objects.nonNull(consumeLimitProperty)) {
+            Integer consumeLimit = Integer.valueOf(consumeLimitProperty);
+            if (message.getReconsumeTimes() > consumeLimit) {
+                log.error("消息消费次数超过阈值:[topic: {}, tag: {}, msgId: {}, startDeliverTime: {}]", message.getTopic(), message.getTag(), message.getMsgID(), message.getStartDeliverTime());
+                return Action.CommitMessage;
+            }
+        }
+        if (Objects.nonNull(timeoutLimitProperty)) {
+            long timeoutLimit = Long.parseLong(timeoutLimitProperty) * 1000L;
+            long createdDate = Long.parseLong(message.getUserProperties("createdDate"));
+            if ((System.currentTimeMillis() - createdDate) > timeoutLimit) {
+                log.error("消息消费时长超过阈值:[topic: {}, tag: {}, msgId: {}, startDeliverTime: {}]", message.getTopic(), message.getTag(), message.getMsgID(), message.getStartDeliverTime());
+                return Action.CommitMessage;
+            }
+        }
         try {
             handle((T)SerializationUtils.deserialize(message.getBody()));
             log.info("handle message success. message id:"+message.getMsgID());
